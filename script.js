@@ -271,6 +271,77 @@ function configureScrollMotion() {
   requestRender();
 }
 
+function configureCoverageMap() {
+  const el = document.getElementById("coverage-map");
+  if (!el) return;
+
+  // Graceful fallback if the vendored Leaflet failed to load.
+  if (typeof L === "undefined" || typeof L.map !== "function") {
+    el.classList.add("is-fallback");
+    el.innerHTML = "<p>Serving Toronto, York, Peel, Halton, Durham, and the extended GTA.</p>";
+    return;
+  }
+
+  const reduce = reducedMotionQuery.matches;
+  const regions = [
+    { name: "Toronto", coords: [43.6532, -79.3832] },
+    { name: "York Region", coords: [43.837, -79.5083] },
+    { name: "Peel", coords: [43.589, -79.6441] },
+    { name: "Halton", coords: [43.529, -79.8711] },
+    { name: "Durham", coords: [43.8975, -78.8658] }
+  ];
+
+  const map = L.map(el, {
+    scrollWheelZoom: false,
+    dragging: true,
+    zoomControl: true,
+    attributionControl: true,
+    fadeAnimation: !reduce,
+    zoomAnimation: !reduce,
+    markerZoomAnimation: !reduce
+  });
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    minZoom: 7,
+    maxZoom: 18,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+
+  // Core service area.
+  L.circle([43.73, -79.42], {
+    radius: 46000,
+    color: "#c6a05e",
+    weight: 1.5,
+    opacity: 0.9,
+    fillColor: "#c6a05e",
+    fillOpacity: 0.12
+  }).addTo(map);
+
+  const bounds = [];
+  regions.forEach((region) => {
+    L.circleMarker(region.coords, {
+      radius: 6,
+      color: "#9c741e",
+      weight: 2,
+      fillColor: "#ecc45e",
+      fillOpacity: 1
+    })
+      .addTo(map)
+      .bindTooltip(region.name, { permanent: true, direction: "top", className: "coverage-tip", offset: [0, -6] });
+    bounds.push(region.coords);
+  });
+
+  map.fitBounds(bounds, { padding: [42, 42] });
+
+  // Landing-page friendly: only capture the wheel once the map has focus.
+  map.on("focus", () => map.scrollWheelZoom.enable());
+  map.on("blur", () => map.scrollWheelZoom.disable());
+
+  // Recalculate size once the reveal/layout has settled.
+  window.setTimeout(() => map.invalidateSize(), 300);
+  window.addEventListener("load", () => map.invalidateSize(), { once: true });
+}
+
 function configureQuoteForm() {
   const form = document.querySelector("[data-quote-form]");
   if (!form) return;
@@ -370,6 +441,7 @@ function initializePage() {
   configureMenu();
   configureReveals();
   configureDetailStrips();
+  configureCoverageMap();
   configureQuoteForm();
   configureScrollMotion();
   configurePageLoad();

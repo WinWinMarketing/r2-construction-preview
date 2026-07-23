@@ -1181,7 +1181,7 @@ h3 {
   margin-top: 1rem;
 }
 
-.final-cta > .section-shell > div:first-child > p:last-child {
+.cta-lede {
   max-width: 36rem;
   margin-top: 1.5rem;
   color: color-mix(in oklch, var(--ink) 78%, var(--gold));
@@ -1848,5 +1848,610 @@ h3 {
   .services-lead {
     position: static;
     margin-bottom: 2rem;
+  }
+}
+
+/* ===================================================================
+   R2 WoodWork additions: bigger logo, trust bar, services grid,
+   gallery, sauna, testimonials, coverage map, quote form, footer social
+   =================================================================== */
+
+/* Larger logo (kept out of the mobile shrink rules via min-width) */
+@media (min-width: 48rem) {
+  .brand {
+    font-size: 1.5rem;
+  }
+  .brand img {
+    width: 3.4rem;
+    height: 2.75rem;
+  }
+  .footer-brand img {
+    width: 3.35rem;
+    height: 2.7rem;
+  }
+}
+
+/* Trust bar */
+.trust-bar {
+  position: relative;
+  z-index: 6;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.trust-bar::before {
+  position: absolute;
+  inset: -1px;
+  background-image:
+    linear-gradient(90deg, color-mix(in oklch, var(--paper) 100%, transparent) 1px, transparent 1px),
+    linear-gradient(0deg, color-mix(in oklch, var(--paper) 100%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+  content: "";
+  opacity: 0.05;
+  animation: r2DriftGrid 32s linear infinite;
+}
+
+@keyframes r2DriftGrid {
+  to { background-position: 44px 44px; }
+}
+
+.trust-inner {
+  position: relative;
+  display: grid;
+  padding-top: clamp(2.75rem, 5vw, 4rem);
+  padding-bottom: clamp(2.75rem, 5vw, 4rem);
+  align-items: center;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.trust-stats {
+  display: grid;
+  gap: 1.25rem 1.5rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  list-style: none;
+}
+
+.trust-stats li {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.trust-stats strong {
+  color: var(--gold-bright);
+  font-family: var(--font-display);
+  font-size: clamp(2.3rem, 3.6vw, 3.3rem);
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+.trust-stats span {
+  color: var(--paper-muted);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.trust-badges {
+  display: grid;
+  gap: 1px;
+  border: 1px solid var(--line-on-dark);
+  background: var(--line-on-dark);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1.15rem;
+  background: var(--ink);
+}
+
+.badge-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid var(--line-on-dark);
+}
+
+.badge-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.badge-icon path {
+  fill: none;
+  stroke: var(--gold-bright);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.badge-num {
+  fill: var(--gold-bright);
+  font-family: var(--font-display);
+  font-size: 8px;
+  text-anchor: middle;
+}
+
+.badge strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+
+.badge small {
+  color: var(--paper-muted);
+  font-size: 0.72rem;
+}
+
+.badge-partner {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.badge-partner a {
+  color: var(--gold-bright);
+}
+
+.badge-partner a:hover,
+.badge-partner a:focus-visible {
+  text-decoration: underline;
+}
+
+/* Services card grid (right column of .services) */
+.service-grid {
+  display: grid;
+  border: 1px solid var(--line-on-light);
+  gap: 1px;
+  background: var(--line-on-light);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.service-grid article {
+  display: grid;
+  gap: 0.5rem;
+  padding: clamp(1.35rem, 2.4vw, 2rem);
+  background: var(--paper);
+}
+
+.service-grid h3 {
+  font-size: clamp(1.55rem, 2.3vw, 2.15rem);
+  line-height: 1;
+}
+
+.service-grid p {
+  color: color-mix(in oklch, var(--ink) 66%, var(--paper));
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.service-grid a {
+  color: var(--gold-dark);
+  font-weight: 600;
+}
+
+.service-grid a:hover,
+.service-grid a:focus-visible {
+  text-decoration: underline;
+}
+
+/* Gallery */
+.gallery {
+  position: relative;
+  z-index: 6;
+  padding-top: clamp(5rem, 9vw, 9rem);
+  padding-bottom: clamp(4rem, 7vw, 7rem);
+  background: var(--paper-deep);
+  overflow: hidden;
+}
+
+.gallery-intro {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.gallery-intro h2 {
+  max-width: 16ch;
+  font-size: clamp(3rem, 6vw, 6rem);
+}
+
+.gallery-cue {
+  color: var(--gold-dark);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.gallery-track {
+  display: flex;
+  gap: 1rem;
+  padding-inline: var(--gutter);
+  padding-bottom: 1.1rem;
+  overflow-x: auto;
+  scroll-padding-inline: var(--gutter);
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-inline: contain;
+  scrollbar-color: var(--gold-dark) transparent;
+  scrollbar-width: thin;
+}
+
+.gallery-item {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  overflow: hidden;
+  background: var(--ink);
+}
+
+.gallery-item img {
+  width: auto;
+  max-width: none;
+  height: clamp(15rem, 32vw, 25rem);
+  object-fit: cover;
+  transition: transform 600ms var(--ease-out);
+}
+
+.gallery-item:hover img {
+  transform: scale(1.04);
+}
+
+.gallery-note {
+  margin-top: 1.25rem;
+  color: color-mix(in oklch, var(--ink) 55%, var(--paper));
+  font-size: 0.82rem;
+}
+
+/* Sauna */
+.sauna {
+  position: relative;
+  z-index: 6;
+  display: grid;
+  padding-top: clamp(6rem, 10vw, 10rem);
+  padding-bottom: clamp(6rem, 10vw, 10rem);
+  align-items: start;
+  gap: clamp(2.5rem, 6vw, 6rem);
+  background: var(--paper);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.sauna-copy h2 {
+  max-width: 11ch;
+  margin-top: 1.1rem;
+  font-size: clamp(3.25rem, 6vw, 6rem);
+}
+
+.sauna-copy > p {
+  max-width: 34rem;
+  margin-top: 1.4rem;
+  color: color-mix(in oklch, var(--ink) 68%, var(--paper));
+}
+
+.sauna-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.6rem;
+  margin-bottom: 2rem;
+  list-style: none;
+}
+
+.sauna-types li {
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--line-on-light);
+  color: color-mix(in oklch, var(--ink) 78%, var(--paper));
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.sauna-steps {
+  border-top: 1px solid var(--line-on-light);
+  list-style: none;
+}
+
+.sauna-steps li {
+  display: grid;
+  padding-block: 1.6rem;
+  align-items: start;
+  gap: 1.25rem;
+  border-bottom: 1px solid var(--line-on-light);
+  grid-template-columns: 2rem minmax(0, 1fr);
+}
+
+.sauna-steps > li > span {
+  padding-top: 0.3rem;
+  color: var(--gold-dark);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+.sauna-steps h3 {
+  font-size: clamp(1.7rem, 2.6vw, 2.4rem);
+  line-height: 1;
+}
+
+.sauna-steps p {
+  margin-top: 0.5rem;
+  color: color-mix(in oklch, var(--ink) 64%, var(--paper));
+  font-size: 0.92rem;
+}
+
+/* Testimonials */
+.testimonials {
+  position: relative;
+  z-index: 6;
+  padding-top: clamp(6rem, 10vw, 10rem);
+  padding-bottom: clamp(6rem, 10vw, 10rem);
+  background: var(--ink-raised);
+  color: var(--paper);
+}
+
+.testimonials-lead {
+  max-width: 40rem;
+  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.testimonials-lead h2 {
+  max-width: 14ch;
+  margin-top: 1.1rem;
+  font-size: clamp(3.25rem, 6vw, 6rem);
+}
+
+.reviews-note {
+  margin-top: 1.25rem;
+  color: var(--paper-muted);
+  font-size: 0.86rem;
+}
+
+.testimonial-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+}
+
+.testimonial-card {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.5rem, 2.6vw, 2.1rem);
+  border: 1px solid var(--line-on-dark);
+  background: color-mix(in oklch, var(--ink) 70%, transparent);
+}
+
+.testimonial-card .stars {
+  color: var(--gold-bright);
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+}
+
+.testimonial-card blockquote {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.testimonial-card figcaption {
+  color: var(--paper-muted);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Coverage map (replaces the old area-list column layout) */
+.areas .area-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 2rem;
+  border-top: 0;
+}
+
+.areas .area-list li {
+  display: inline-flex;
+  min-height: 0;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--line-on-light);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.areas-map {
+  position: relative;
+  align-self: center;
+  padding: clamp(1rem, 3vw, 2.5rem);
+}
+
+.areas-map svg {
+  width: 100%;
+  height: auto;
+}
+
+.cover-glow {
+  animation: r2Pulse 6s var(--ease-standard) infinite;
+  transform-origin: center;
+}
+
+@keyframes r2Pulse {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+
+.cover-ring {
+  fill: none;
+  stroke: var(--line-on-light);
+  stroke-width: 1;
+}
+
+.cover-cross {
+  stroke: var(--line-on-light);
+  stroke-dasharray: 3 6;
+  stroke-width: 1;
+}
+
+.cover-pin {
+  fill: var(--gold);
+}
+
+.cover-labels text {
+  fill: color-mix(in oklch, var(--ink) 68%, var(--paper));
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-anchor: middle;
+  text-transform: uppercase;
+}
+
+/* Quote form (sits inside the gold final CTA) */
+.final-cta-inner {
+  align-items: start;
+}
+
+.quote-form {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.5rem, 3vw, 2.4rem);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.quote-form h3 {
+  font-size: clamp(2rem, 3vw, 2.7rem);
+  line-height: 1;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field label {
+  color: var(--paper-muted);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 0.72rem 0.85rem;
+  border: 1px solid var(--line-on-dark);
+  background: color-mix(in oklch, var(--paper) 94%, transparent);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 6rem;
+}
+
+.field input:focus-visible,
+.field textarea:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 1px;
+}
+
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.quote-form .button {
+  width: 100%;
+  margin-top: 0.35rem;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.quote-status {
+  min-height: 1.1rem;
+  color: var(--paper-muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.quote-status[data-tone="error"] { color: oklch(0.72 0.15 32); }
+.quote-status[data-tone="ok"] { color: oklch(0.8 0.13 150); }
+
+/* Footer social row */
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  grid-column: 1 / -1;
+  padding-top: 0.5rem;
+}
+
+.footer-social a {
+  position: relative;
+  color: var(--paper);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.footer-social a[aria-disabled="true"] {
+  color: var(--paper-muted);
+  cursor: default;
+}
+
+.footer-social a:not([aria-disabled="true"]):hover,
+.footer-social a:not([aria-disabled="true"]):focus-visible {
+  color: var(--gold-bright);
+}
+
+/* Responsive for the new sections */
+@media (max-width: 56rem) {
+  .trust-inner,
+  .sauna {
+    grid-template-columns: 1fr;
+  }
+  .trust-badges {
+    order: -1;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .trust-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .service-grid {
+    grid-template-columns: 1fr;
+  }
+  .gallery-intro h2,
+  .sauna-copy h2,
+  .testimonials-lead h2 {
+    font-size: clamp(3rem, 13vw, 4.6rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trust-bar::before,
+  .cover-glow,
+  .gallery-item img {
+    animation: none;
+    transition: none;
   }
 }

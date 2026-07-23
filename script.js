@@ -1,15 +1,26 @@
 "use strict";
 
 const CONTACT_CONFIG = Object.freeze({
-  businessName: "R2 Construction",
+  businessName: "R2 WoodWork",
+  // Drop in Max's real details here. Phone accepts any format (auto-normalized to E.164).
   phoneE164: "",
   whatsappE164: "",
-  whatsappMessage: "Hi, I’d like a free estimate for a finish carpentry project."
+  email: "",
+  whatsappMessage: "Hi, I’d like a free estimate for a finish carpentry / trim project."
 });
 
 const BUSINESS_CLAIMS = Object.freeze({
-  wsibCovered: false,
-  workmanshipWarranty: false
+  // Confirmed in the client brief: WSIB coverage + workmanship warranty.
+  wsibCovered: true,
+  workmanshipWarranty: true
+});
+
+// Quote form delivery. Web3Forms works on a static host (GitHub Pages) with no server:
+// create a free key at https://web3forms.com tied to the business inbox, paste it below.
+// The access key is public by design. Until it is set, the form falls back to an email/mailto path.
+const QUOTE_FORM_CONFIG = Object.freeze({
+  accessKey: "",
+  subject: "New estimate request from the R2 WoodWork site"
 });
 
 const root = document.documentElement;
@@ -86,6 +97,14 @@ function configureContacts() {
         true
       );
     } else disableContactLink(link, "WhatsApp");
+  });
+
+  const email = typeof CONTACT_CONFIG.email === "string" ? CONTACT_CONFIG.email.trim() : "";
+  document.querySelectorAll('[data-contact="email"]').forEach((link) => {
+    if (email) enableContactLink(link, `mailto:${email}`, `Email ${CONTACT_CONFIG.businessName}`);
+    else disableContactLink(link, "Email");
+    const label = link.querySelector("[data-email-label]");
+    if (label) label.textContent = email || "Email pending";
   });
 
   let contactMessage = "Preview only — phone and WhatsApp details have not been supplied yet.";
@@ -252,6 +271,92 @@ function configureScrollMotion() {
   requestRender();
 }
 
+function configureQuoteForm() {
+  const form = document.querySelector("[data-quote-form]");
+  if (!form) return;
+
+  const status = form.querySelector("[data-quote-status]");
+  const submit = form.querySelector('button[type="submit"]');
+  const accessKey = typeof QUOTE_FORM_CONFIG.accessKey === "string" ? QUOTE_FORM_CONFIG.accessKey.trim() : "";
+  const email = typeof CONTACT_CONFIG.email === "string" ? CONTACT_CONFIG.email.trim() : "";
+
+  const setStatus = (message, tone) => {
+    if (!status) return;
+    status.textContent = message;
+    status.dataset.tone = tone || "";
+  };
+
+  // No delivery configured yet: keep the form usable as a pre-addressed email draft if we have an inbox,
+  // otherwise present it in a clearly-labelled preview state instead of silently failing.
+  if (!accessKey) {
+    form.dataset.mode = email ? "mailto" : "preview";
+    setStatus(
+      email
+        ? "This opens a pre-filled email. Connect Web3Forms for one-click sending."
+        : "Preview only. Add a Web3Forms key or business email to start receiving requests.",
+      "muted"
+    );
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    // Honeypot: real users never fill this hidden field.
+    if (form.querySelector('[name="botcheck"]')?.value) return;
+
+    const data = new FormData(form);
+    const name = String(data.get("name") || "").trim();
+    const contact = String(data.get("contact") || "").trim();
+    const details = String(data.get("details") || "").trim();
+
+    if (name.length < 2 || contact.length < 5 || details.length < 5) {
+      setStatus("Please add your name, a way to reach you, and a short project note.", "error");
+      return;
+    }
+
+    if (!accessKey) {
+      if (email) {
+        const body = `Name: ${name}%0D%0AContact: ${contact}%0D%0A%0D%0A${encodeURIComponent(details)}`;
+        window.location.href = `mailto:${email}?subject=${encodeURIComponent(QUOTE_FORM_CONFIG.subject)}&body=${body}`;
+        setStatus("Opening your email app with the details filled in.", "ok");
+      } else {
+        setStatus("The request form is not connected yet. Please check back shortly.", "muted");
+      }
+      return;
+    }
+
+    if (submit) submit.disabled = true;
+    setStatus("Sending your request…", "muted");
+
+    try {
+      const payload = {
+        access_key: accessKey,
+        subject: QUOTE_FORM_CONFIG.subject,
+        from_name: `${CONTACT_CONFIG.businessName} website`,
+        name,
+        contact,
+        details
+      };
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (response.ok && result.success) {
+        form.reset();
+        setStatus("Thanks. Your request is in, we’ll reply with next steps.", "ok");
+      } else {
+        setStatus("Something went wrong. Please call or message us instead.", "error");
+      }
+    } catch (networkError) {
+      setStatus("Network issue. Please call or message us instead.", "error");
+    } finally {
+      if (submit) submit.disabled = false;
+    }
+  });
+}
+
 function configurePageLoad() {
   window.requestAnimationFrame(() => {
     window.requestAnimationFrame(() => root.classList.add("page-ready"));
@@ -265,6 +370,7 @@ function initializePage() {
   configureMenu();
   configureReveals();
   configureDetailStrips();
+  configureQuoteForm();
   configureScrollMotion();
   configurePageLoad();
 
